@@ -6,7 +6,7 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-# Split argument into container and path
+# Extract container name and path
 ARG=$1
 DOCKER_CONTAINER=$(echo "$ARG" | cut -d: -f1)
 CONTAINER_PATH=$(echo "$ARG" | cut -d: -f2-)
@@ -38,10 +38,10 @@ echo "Found RPM file: $RPM_FILE"
 
 # Copy RPM file to Docker container
 echo "Copying $RPM_FILE to container $DOCKER_CONTAINER:$CONTAINER_PATH ..."
-docker cp "$RPM_FILE" "$DOCKER_CONTAINER":"$CONTAINER_PATH"
+docker cp "$RPM_FILE" "$DOCKER_CONTAINER:$CONTAINER_PATH"
 
 if [ $? -eq 0 ]; then
-    echo "File successfully copied."
+    echo "Successfully copied $(du -h "$RPM_FILE" | cut -f1) to $DOCKER_CONTAINER:$CONTAINER_PATH"
 else
     echo "Error while copying the file."
     exit 1
